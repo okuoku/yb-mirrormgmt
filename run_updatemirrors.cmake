@@ -22,7 +22,9 @@ foreach(e ${mir})
         else()
             # Do fresh clone
             execute_process(COMMAND
-                git clone --mirror ${url} ${dir}
+                git clone 
+                -c http.postBuffer=20000000
+                --mirror ${url} ${dir}
                 RESULT_VARIABLE rr)
             if(rr)
                 message(STATUS "${sym}: Failed to clone ${url}")
