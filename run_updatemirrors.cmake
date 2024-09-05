@@ -1,5 +1,6 @@
 file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/mirrorlist.txt" mir)
 set(root "${CMAKE_CURRENT_LIST_DIR}/_mirrors")
+include("${CMAKE_CURRENT_LIST_DIR}/mirrorparams.cmake")
 
 file(MAKE_DIRECTORY "${root}")
 
@@ -20,11 +21,16 @@ foreach(e ${mir})
                 # message(FATAL_ERROR "Error on fetch [${rr}]")
             endif()
         else()
+            if(REPO_${sym}_NOMIRROR)
+                set(type --bare)
+            else()
+                set(type --mirror)
+            endif()
             # Do fresh clone
             execute_process(COMMAND
                 git clone 
                 -c http.postBuffer=20000000
-                --mirror ${url} ${dir}
+                --bare ${url} ${dir}
                 RESULT_VARIABLE rr)
             if(rr)
                 message(STATUS "${sym}: Failed to clone ${url}")
